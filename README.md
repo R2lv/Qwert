@@ -50,7 +50,7 @@ Qwert will scan these directories and read model, view, controller and middlewar
 
 ## Controller
 Controllers must be located in _controllers_dir_ directory
-####How to create / Example
+###How to create / Example
 create file in controllers directory, for example _TestController.js_ <br>
 Contents:
 ```javascript
@@ -66,7 +66,7 @@ module.exports = Controller(function($request, $response) {
 ```
 this will create controller, that handles request on /test page<br>
 Qwert injects services as controller function arguments by argument names, [read about services](#services)
-#### Parameters
+### Parameters
 `Controller(fn, options)`
 - **fn** - _Function_ - controller function, arguments are [services](#services)
 - **options** - _Object_ - options of controller
@@ -77,7 +77,7 @@ Qwert injects services as controller function arguments by argument names, [read
 ## ControllerGroup
 Controller groups must be located in _controllers_dir_ directory
 
-####How to create / Example
+###How to create / Example
 create file in controllers directory, for example TestControllerGroup.js<br>
 Contents:
 ```javascript
