@@ -32,6 +32,7 @@ According to this configuration, our directory structure will be
 
 <pre>
 |-- index.js
+|-- src
     |-- controllers
     |-- middleware
     |-- models
@@ -41,13 +42,13 @@ According to this configuration, our directory structure will be
 Qwert will scan these directories and read model, view, controller and middleware js files from there, You can read more about how to create these files below
 
 ## Modules
-- `require("qwert")` - Main modules of framework
-- `require("qwert/ControllerGroup")`
-- `require("qwert/Controller")`
-- `require("qwert/Middleware")`
-- `require("qwert/Model")`
+- `require("qwert")` - [read docs](#qwert)
+- `require("qwert/ControllerGroup")` - [read docs](#controllergroup)
+- `require("qwert/Controller")` - [read docs](#controller)
+- `require("qwert/Middleware")` - [read docs](#middleware)
+- `require("qwert/Model")` - [read docs](#model)
 
-### Controller
+## Controller
 **Note that every controller must be located in *controllers_dir* directory**<br>
 Usage:
 ```javascript
@@ -66,9 +67,9 @@ module.exports = Controller(function($request, $response) {
 });
 ```
 this will create controller, that handles request on /test page<br>
-Notice controller function arguments, they are services [read about services](#services)
+Notice controller function arguments, they are services, [read about services](#services)
 
-### ControllerGroup
+## ControllerGroup
 **Every controller group must be located in *controllers_dir***<br>
 usage:
 ```javascript
