@@ -49,12 +49,10 @@ Qwert will scan these directories and read model, view, controller and middlewar
 - `require("qwert/Model")` - [read docs](#model)
 
 ## Controller
-**Note that every controller must be located in *controllers_dir* directory**<br>
-Usage:
-```javascript
-Controller(func, config);
-```
-example controller<br>
+Controllers must be located in _controllers_dir_ directory
+####How to create / Example
+create file in controllers directory, for example _TestController.js_ <br>
+Contents:
 ```javascript
 // file: controllers/TestController.js
 
@@ -67,39 +65,40 @@ module.exports = Controller(function($request, $response) {
 });
 ```
 this will create controller, that handles request on /test page<br>
-Notice controller function arguments, they are services, [read about services](#services)
+Qwert injects services as controller function arguments by argument names, [read about services](#services)
+#### Parameters
+`Controller(fn, options)`
+- **fn** - _Function_ - controller function, arguments are [services](#services)
+- **options** - _Object_ - options of controller
+    - **route (required)** - _String_ - route that will be handled by controller, this parameter is
+    - **middleware** - _Array, String_ - middleware name or array of middleware names
+    - **method** - _String_ - method that will be handled (GET, POST, PUT, PATCH etc...), default is GET
 
 ## ControllerGroup
-**Every controller group must be located in *controllers_dir***<br>
-usage:
-```javascript
-var group = ControllerGroup(config);
+Controller groups must be located in _controllers_dir_ directory
 
-group.add(controller1);
-group.add(controller2);
-```
-
-Example:
+####How to create / Example
+create file in controllers directory, for example TestControllerGroup.js<br>
+Contents:
 ```javascript
-// file: controllers/hello.js
+// file: controllers/TestControllerGroup.js
 
 const ControllerGroup = require("qwert/ControllerGroup");
 
 var group = ControllerGroup({
-    route: "/hello"
+    route: "/home"
 });
 
 group.add(Controller(function($request, $response) {
     
 }, {
-    route: "/world"
+    route: "/main"
 }));
 
 module.exports = group;
 ```
-this will create controller for url http://website.com/hello/world
-You can add as many controllers to the group as needed
-
+This code will create ControllerGroup that handles requests on /home url<br>
+Then added one controller which handles /home/main request, you can add as much controllers in group as needed
 
 ## Services
 Services are used in controller, model and middleware functions<br>
