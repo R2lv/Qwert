@@ -66,7 +66,7 @@ module.exports = Controller(function($request, $response) {
 });
 ```
 this will create controller, that handles request on /test page<br>
-Notice controller function arguments, they are services, you will read more about services below
+Notice controller function arguments, they are services [read about services](#services)
 
 ### ControllerGroup
 **Every controller group must be located in *controllers_dir***<br>
