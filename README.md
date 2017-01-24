@@ -10,7 +10,8 @@ Node.js web application development framework built on top of Express
 
 ## Configuration
 example configuration:
-```javascript 1.8
+
+```javascript
 const qwert = require("qwert");
 const path = require("path");
 
@@ -49,11 +50,11 @@ Qwert will scan these directories and read model, view, controller and middlewar
 ## Controller
 **Note that every controller must be located in *controllers_dir* directory**<br>
 Usage:
-```javascript 1.8
+```javascript
 Controller(func, config);
 ```
 example controller<br>
-```javascript 1.8
+```javascript
 // file: controllers/TestController.js
 
 const Controller = require("qwert/Controller");
@@ -70,7 +71,7 @@ Notice controller function arguments, they are services, you will read more abou
 ## ControllerGroup
 **Every controller group must be located in *controllers_dir***<br>
 usage:
-```javascript 1.8
+```javascript
 var group = ControllerGroup(config);
 
 group.add(controller1);
@@ -78,7 +79,7 @@ group.add(controller2);
 ```
 
 Example:
-```javascript 1.8
+```javascript
 // file: controllers/hello.js
 
 const ControllerGroup = require("qwert/ControllerGroup");
