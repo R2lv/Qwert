@@ -101,6 +101,14 @@ You can add as many controllers to the group as needed
 
 
 ## Services
+Services are used in controller, model and middleware functions<br>
+Service is passed to the function by name<br>
+Example
+```javascript
+function Test($post, $response) { // Parameter sequence and length has no matter
+    $response.send($post.get("name"));
+}
+```
 - `$request` - express request object [see docs](#)
 - `$response` - express response object [see docs](#)
     * example: `$response.send("Hello world");`
@@ -111,8 +119,8 @@ You can add as many controllers to the group as needed
     * example: `$get.get('user_id');` same as *$post*
 - `$model` - Model provider
     * example `var user = $model('User');`
+- `$next` - used in Middleware, function that has to be called to continue request flow
 - `$upload` - Service for accepting uploaded files, files won't stored unless you accept them by this service, generally used in middleware
     * example `$upload('file1').then(next);` where file1 is form field and next is callback function
 - `$files` - files uploaded by `Content-Type: multipart/form-data` and received by $upload service
     * example `var filename = $files.handler().get('file1').moveAutoName(__dirname+'../images/', true);`
-    
