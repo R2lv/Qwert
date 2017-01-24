@@ -43,8 +43,8 @@ Qwert will scan these directories and read model, view, controller and middlewar
 
 ## Modules
 - `require("qwert")` - [read docs](#qwert)
-- `require("qwert/ControllerGroup")` - [read docs](#controllergroup)
 - `require("qwert/Controller")` - [read docs](#controller)
+- `require("qwert/ControllerGroup")` - [read docs](#controllergroup)
 - `require("qwert/Middleware")` - [read docs](#middleware)
 - `require("qwert/Model")` - [read docs](#model)
 
