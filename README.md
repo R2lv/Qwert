@@ -2,7 +2,7 @@
 Node.js web application development framework built on top of Express
 
 ## Installation
-1. You can use **Qwert starter** github repository
+1. You can use [Qwert starter](https://github.com/gtabat/QwertStarter) github repository
     1. clone this repository on your local disk
     2. run `npm install` from command line
 2. Or use npm repository
@@ -47,7 +47,7 @@ Qwert will scan these directories and read model, view, controller and middlewar
 - `require("qwert/Middleware")`
 - `require("qwert/Model")`
 
-## Controller
+### Controller
 **Note that every controller must be located in *controllers_dir* directory**<br>
 Usage:
 ```javascript
@@ -68,7 +68,7 @@ module.exports = Controller(function($request, $response) {
 this will create controller, that handles request on /test page<br>
 Notice controller function arguments, they are services, you will read more about services below
 
-## ControllerGroup
+### ControllerGroup
 **Every controller group must be located in *controllers_dir***<br>
 usage:
 ```javascript
@@ -98,3 +98,21 @@ module.exports = group;
 ```
 this will create controller for url http://website.com/hello/world
 You can add as many controllers to the group as needed
+
+
+## Services
+- `$request` - express request object [see docs](#)
+- `$response` - express response object [see docs](#)
+    * example: `$response.send("Hello world");`
+- `$post` - POST data of the request
+    * example 1: `$post.get("user_id"); // returns empty string if no user_id in post data`
+    * example 2: `$post.all(); // returns object that contains all post data`
+- `$get` - GET data of the request
+    * example: `$get.get('user_id');` same as *$post*
+- `$model` - Model provider
+    * example `var user = $model('User');`
+- `$upload` - Service for accepting uploaded files, files won't stored unless you accept them by this service, generally used in middleware
+    * example `$upload('file1').then(next);` where file1 is form field and next is callback function
+- `$files` - files uploaded by `Content-Type: multipart/form-data` and received by $upload service
+    * example `var filename = $files.handler().get('file1').moveAutoName(__dirname+'../images/', true);`
+    
