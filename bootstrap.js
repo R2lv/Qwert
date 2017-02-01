@@ -49,6 +49,11 @@ module.exports = new (function() {
             return [];
         }
         var files = fs.readdirSync(dir);
+        files.forEach(function(file,i) {
+            if(!file.endsWith(".js")) {
+                files.splice(i,1);
+            }
+        });
         return getRealPaths(files, dir);
     }
 
