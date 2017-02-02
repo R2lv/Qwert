@@ -27,7 +27,8 @@ module.exports = new (function() {
     var _variables = {
         controllers: {},
         models: {},
-        middleware: {}
+        middleware: {},
+        singletons: {}
     };
 
     _variables.services = new services(_variables);
@@ -213,8 +214,12 @@ module.exports = new (function() {
         }
     }
 
-    this.registerServiceProvider = function(service, fn) {
+    this.setServiceProvider = function(service, fn) {
         _variables.services[service] = fn;
+    };
+
+    this.setSingletonProvider = function(singleton, fn) {
+        _variables.singletons[singleton] = fn();
     };
 
     this.config = function(conf) {
@@ -260,4 +265,5 @@ module.exports = new (function() {
         boot();
         return self;
     };
+
 })();

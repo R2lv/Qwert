@@ -121,4 +121,14 @@ module.exports = function(_vars) {
         }
     };
 
+    this.$app = function() {
+        return app;
+    };
+
+    var app = {
+        singleton: function(name) {
+            return _vars.singletons[name];
+        }
+    };
+
 };
