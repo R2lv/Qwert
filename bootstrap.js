@@ -1,5 +1,6 @@
 'use strict';
 const express = require("express");
+const http = require("http");
 const path = require("path");
 const fs = require("fs");
 const bodyParser = require("body-parser");
@@ -33,8 +34,9 @@ module.exports = new (function() {
 
     _variables.services = new services(_variables);
 
-    var _app = express();
-
+    var _app = express(),
+        _http = http.Server(_app),
+        _session;
     function realDir(dir) {
         return path.join(config.root_dir, dir);
     }
@@ -82,29 +84,21 @@ module.exports = new (function() {
     }
 
     function findMiddleware() {
-        var files = findJsInDir(realDir(config.middleware_dir));
+        let files = findJsInDir(realDir(config.middleware_dir));
 
         files.forEach(function(file) {
-            var mware = require(file);
-            if(typeof mware.name == "string")
+            let mware = require(file);
+            if(typeof mware.name === "string")
                 _variables.middleware[mware.name] = mware;
         });
     }
 
     function configureApp() {
-
-        var uploader = new Uploader(config.upload);
-        _variables.uploader = uploader;
+        _variables.uploader = new Uploader(config.upload);
 
         _app.set('trust proxy', 1);
 
-        _app.use(session({
-            name: config.sessionCookieName || defaults.sessionCookieName,
-            secret: config.cookieSecret || defaults.cookieSecret,
-            resave: true,
-            saveUninitialized: true,
-            store: config.sessionStore || defaults.sessionStore
-        }));
+        _app.use(_session);
 
         _app.use(bodyParser.urlencoded({ extended: true }));
         _app.use(bodyParser.json());
@@ -114,7 +108,7 @@ module.exports = new (function() {
         // _app.use(uploader.none());
 
         if(util.exists(config.views.engines)) {
-            for(var ext in config.views.engines) {
+            for(let ext in config.views.engines) {
                 _app.engine(ext, config.views.engines[ext]);
             }
         }
@@ -128,13 +122,13 @@ module.exports = new (function() {
     }
 
     function getRouteArguments(ctrl) {
-        var controller = controllerInjector(ctrl.controller);
-        var fns = [ctrl.route];
+        const controller = controllerInjector(ctrl.controller);
+        const fns = [ctrl.route];
         if(Array.isArray(ctrl.middleware)) {
             ctrl.middleware.forEach(function(middleware) {
                 fns.push(getMiddleware(middleware));
             });
-        } else if(typeof ctrl.middleware == "string" || typeof ctrl.middleware == "function") {
+        } else if(typeof ctrl.middleware === "string" || typeof ctrl.middleware === "function") {
             fns.push(getMiddleware(ctrl.middleware));
         }
 
@@ -143,7 +137,7 @@ module.exports = new (function() {
     }
 
     function getMiddleware(func) {
-        if(typeof func == 'function') {
+        if(typeof func === 'function') {
             return middlewareInjector(func);
         } else if(util.exists(_variables.middleware[func]))
             return middlewareInjector(_variables.middleware[func].fn);
@@ -152,10 +146,10 @@ module.exports = new (function() {
     }
 
     function setRoutes() {
-        for(var route in _variables.controllers) {
-            var ctrl = _variables.controllers[route];
+        for(const route in _variables.controllers) {
+            const ctrl = _variables.controllers[route];
             if(util.exists(ctrl.controller)) {
-                var args = getRouteArguments(ctrl);
+                const args = getRouteArguments(ctrl);
                 _app[ctrl.method.toLowerCase()].apply(_app, args);
             } else {
                 setRouteGroup(ctrl._get());
@@ -165,9 +159,9 @@ module.exports = new (function() {
 
 
     function setRouteGroup(ctrl) {
-        var router = express.Router();
+        const router = express.Router();
 
-        if(typeof ctrl.group.middleware == "string") {
+        if(typeof ctrl.group.middleware === "string") {
             router.use(getMiddleware(ctrl.group.middleware));
         } else if(Array.isArray(ctrl.group.middleware)) {
             ctrl.group.middleware.forEach(function(middleware) {
@@ -176,14 +170,14 @@ module.exports = new (function() {
         }
 
         ctrl.controllers.forEach(function(c) {
-            var args = getRouteArguments(c);
+            const args = getRouteArguments(c);
             router[c.method.toLowerCase()].apply(router, args);
         });
 
         _app.use(ctrl.group.route, router);
     }
 
-    function boot() {
+    function init() {
         findControllers();
         findModels();
         findMiddleware();
@@ -191,11 +185,10 @@ module.exports = new (function() {
         configureApp();
         setRoutes();
 
-        _app.listen(config.port);
     }
 
     function inject(fn, req, res, next) {
-        var services = util.getFnArgumentNames(fn);
+        let services = util.getFnArgumentNames(fn);
         services = services.map(function(s) {
             return _variables.services.hasOwnProperty(s) ? _variables.services[s](req, res, inject, next) : null;
         });
@@ -220,6 +213,18 @@ module.exports = new (function() {
 
     this.setSingletonProvider = function(singleton, fn) {
         _variables.singletons[singleton] = fn();
+    };
+
+    this.getHttpServer = function() {
+        return _http;
+    };
+
+    this.getExpressInstance = function() {
+        return _app;
+    };
+
+    this.getSessionMiddleware = function() {
+        return _session;
     };
 
     this.config = function(conf) {
@@ -255,6 +260,15 @@ module.exports = new (function() {
 
         config.upload.dest = realDir(config.upload.dest);
 
+        _session = session({
+            name: config.sessionCookieName || defaults.sessionCookieName,
+            secret: config.cookieSecret || defaults.cookieSecret,
+            resave: true,
+            saveUninitialized: true,
+            store: config.sessionStore || defaults.sessionStore
+        });
+
+
         return self;
     };
 
@@ -262,7 +276,8 @@ module.exports = new (function() {
         if(!util.exists(config)) {
             throw new Error("Config is not set");
         }
-        boot();
+        init();
+        _http.listen(config.port);
         return self;
     };
 
