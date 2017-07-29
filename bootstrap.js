@@ -8,11 +8,12 @@ const session = require("express-session");
 
 const util = require("./_lib/Utils");
 const Uploader = require("./_lib/uploader");
-const services = require("./_lib/services");
+const Services = require("./_lib/services");
 
 module.exports = new (function() {
-    var self = this;
-    var config,
+    const self = this;
+    let config;
+    const
         defaults = {
             "controllers_dir": "controllers",
             "models_dir": "models",
@@ -23,20 +24,20 @@ module.exports = new (function() {
             "sessionStore": new session.MemoryStore(),
             "sessionCookieName": "SESSID",
             "cookieSecret": "Hack Me!"
+        },
+        _variables = {
+            controllers: {},
+            models: {},
+            middleware: {},
+            singletons: {}
         };
 
-    var _variables = {
-        controllers: {},
-        models: {},
-        middleware: {},
-        singletons: {}
-    };
+    _variables.services = new Services(_variables);
 
-    _variables.services = new services(_variables);
+    const _app = express(),
+        _http = http.Server(_app);
+    let _session;
 
-    var _app = express(),
-        _http = http.Server(_app),
-        _session;
     function realDir(dir) {
         return path.join(config.root_dir, dir);
     }
@@ -51,7 +52,7 @@ module.exports = new (function() {
         if(!fs.existsSync(dir)) {
             return [];
         }
-        var files = fs.readdirSync(dir);
+        const files = fs.readdirSync(dir);
         files.forEach(function(file,i) {
             if(!file.endsWith(".js")) {
                 files.splice(i,1);
@@ -62,10 +63,10 @@ module.exports = new (function() {
 
     function findControllers() {
 
-        var files = findJsInDir(realDir(config.controllers_dir));
+        const files = findJsInDir(realDir(config.controllers_dir));
 
         files.forEach(function(file) {
-            var ctrl = require(file);
+            const ctrl = require(file);
             if(!util.exists(ctrl.route) || !util.exists(ctrl.route)) {
                 throw new Error("Controller "+file+" not found, maybe you missed module.exports at the end of the file");
             }
@@ -75,10 +76,10 @@ module.exports = new (function() {
     }
 
     function findModels() {
-        var files = findJsInDir(realDir(config.models_dir));
+        const files = findJsInDir(realDir(config.models_dir));
 
         files.forEach(function(file) {
-            var mdl = require(file);
+            const mdl = require(file);
             _variables.models[mdl.name] = mdl;
         });
     }
@@ -272,12 +273,12 @@ module.exports = new (function() {
         return self;
     };
 
-    this.boot = function() {
+    this.boot = function(cb) {
         if(!util.exists(config)) {
             throw new Error("Config is not set");
         }
         init();
-        _http.listen(config.port);
+        _http.listen(config.port, cb.bind(self));
         return self;
     };
 

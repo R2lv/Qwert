@@ -27,7 +27,7 @@ module.exports = function(_vars) {
     this.$session = function(req) {
         return {
             has: function(name) {
-                return typeof req.session[name] != "undefined";
+                return typeof req.session[name] !== "undefined";
             },
             get: function(name) {
                 return req.session[name] || "";
@@ -44,7 +44,7 @@ module.exports = function(_vars) {
     this.$post = function(req) {
         return {
             has: function(name) {
-                return typeof req.body[name] != "undefined";
+                return typeof req.body[name] !== "undefined";
             },
             get: function(name) {
                 return req.body[name] || "";
@@ -61,7 +61,7 @@ module.exports = function(_vars) {
     this.$get = function(req) {
         return {
             has: function(name) {
-                return typeof req.query[name] != "undefined";
+                return typeof req.query[name] !== "undefined";
             },
             get: function(name) {
                 return req.query[name] || "";
@@ -78,7 +78,7 @@ module.exports = function(_vars) {
     this.$param = function(req) {
         return {
             has: function(name) {
-                return typeof req.params[name] != "undefined";
+                return typeof req.params[name] !== "undefined";
             },
             get: function(name) {
                 return req.params[name] || "";
@@ -98,7 +98,7 @@ module.exports = function(_vars) {
 
     this.$upload = function(req, res, injector, next) {
         return  function(fields) {
-            var _cb;
+            let _cb;
 
             _vars.uploader.accept(fields)(req, res, function() {
                 if(_cb) _cb();
@@ -125,7 +125,7 @@ module.exports = function(_vars) {
         return app;
     };
 
-    var app = {
+    const app = {
         singleton: function(name) {
             return _vars.singletons[name];
         }
