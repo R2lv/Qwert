@@ -5,11 +5,11 @@ module.exports = function() {
     var _rules = {
         required: function(item, val) {
             if(!val) return true;
-            return (typeof item != "undefined");
+            return (typeof item !== "undefined");
         },
         type: function(item, type) {
             type = realType(type);
-            return typeof item == type;
+            return typeof item === type;
         },
         min: function(item, min) {
             return item >= min;
@@ -18,7 +18,7 @@ module.exports = function() {
             return item <= max;
         },
         inArray: function(item, arr) {
-            return arr.indexOf(item) != -1;
+            return arr.indexOf(item) !== -1;
         },
         minLength: function(item, min) {
             return item.length && item.length >= min;
@@ -27,22 +27,22 @@ module.exports = function() {
             return item.length && item.length <= max;
         },
         notEquals: function(item, item2) {
-            return item != item2;
+            return item !== item2;
         },
         notEqualsWithType: function(item, item2) {
             return item !== item2;
         },
         equals: function(item, item2) {
-            return item==item2;
+            return item===item2;
         },
         equalsWithType: function(item, item2) {
             return item===item2;
         },
         startsWith: function(item, value) {
-            return typeof item == "string" && item.startsWith(value);
+            return typeof item === "string" && item.startsWith(value);
         },
         endsWith: function(item, value) {
-            return typeof item == "string" && item.endsWith(value);
+            return typeof item === "string" && item.endsWith(value);
         }
     };
 
@@ -63,7 +63,7 @@ module.exports = function() {
         if(Array.isArray(val)) {
             val = val.join(",");
         }
-        if(typeof _errorMessages[_lang][rule] != "undefined") {
+        if(typeof _errorMessages[_lang][rule] !== "undefined") {
             return _errorMessages[_lang][rule].replace(/\{field\}/ig, field).replace(/\{value\}/ig, val);
         } else {
             return null;
@@ -138,11 +138,11 @@ module.exports = function() {
     };
 
     self.setErrorMessages = function(lang, messages) {
-        if(typeof messages != "object") {
+        if(typeof messages !== "object") {
             throw new Error("messages must be object containing pairs of validation rule and message");
         }
 
-        if(typeof _errorMessages[lang] == "undefined") {
+        if(typeof _errorMessages[lang] === "undefined") {
             _errorMessages[lang] = messages;
         } else {
             for (var rule in messages) {
@@ -152,7 +152,7 @@ module.exports = function() {
     };
 
     self.setAlias = function(lang, name, value) {
-        if(typeof _aliases[lang] != "undefined") {
+        if(typeof _aliases[lang] !== "undefined") {
             _aliases[lang][key] = value;
         } else {
             _aliases[lang] = {};
@@ -161,7 +161,7 @@ module.exports = function() {
     };
 
     self.setAliases = function(lang, aliases) {
-        if(typeof _aliases[lang] == "undefined") {
+        if(typeof _aliases[lang] === "undefined") {
             _aliases[lang] = aliases;
         } else {
             for (var name in aliases) {

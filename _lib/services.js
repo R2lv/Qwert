@@ -7,9 +7,14 @@ module.exports = function(_vars) {
         return new (injector(fn, req, res))();
     }
 
+    function modelInjector(fn, req, res, injector) {
+        return new (injector(fn, req, res));
+    }
+
     this.$model = function(req, res, injector) {
         return function(name) {
             if (_vars.models.hasOwnProperty(name)) {
+                // return modelInjector(_vars.models[name].model, req, res, injector);
                 return objectInjector(_vars.models[name].model, req, res, injector);
             }
             return null;
@@ -37,6 +42,12 @@ module.exports = function(_vars) {
             },
             all: function() {
                 return req.session || {}
+            },
+            destroy: function(cb) {
+                req.session.destroy(cb);
+            },
+            unset: function(name) {
+                delete req.session[name];
             }
         };
     };
@@ -121,13 +132,13 @@ module.exports = function(_vars) {
         }
     };
 
-    this.$app = function() {
-        return app;
+    this.$global = function() {
+        return global.get;
     };
 
-    const app = {
-        singleton: function(name) {
-            return _vars.singletons[name];
+    const global = {
+        get: function(name) {
+            return _vars.globals[name];
         }
     };
 

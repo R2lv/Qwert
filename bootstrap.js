@@ -29,7 +29,7 @@ module.exports = new (function() {
             controllers: {},
             models: {},
             middleware: {},
-            singletons: {}
+            globals: {}
         };
 
     _variables.services = new Services(_variables);
@@ -212,11 +212,15 @@ module.exports = new (function() {
         _variables.services[service] = fn;
     };
 
-    this.setSingletonProvider = function(singleton, fn) {
-        _variables.singletons[singleton] = fn();
+    this.setGlobal = function(global, fn) {
+        _variables.globals[global] = fn();
     };
 
-    this.getHttpServer = function() {
+    this.getGlobal = function(global) {
+        return _variables.globals[global];
+    };
+
+    this.getHttpServerInstance = function() {
         return _http;
     };
 
