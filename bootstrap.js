@@ -32,11 +32,11 @@ module.exports = new (function() {
             globals: {}
         };
 
-    _variables.services = new Services(_variables);
-
     const _app = express(),
         _http = http.Server(_app);
     let _session;
+
+    _variables.services = new Services(_variables, _app);
 
     function realDir(dir) {
         return path.join(config.root_dir, dir);
@@ -282,7 +282,7 @@ module.exports = new (function() {
             throw new Error("Config is not set");
         }
         init();
-        _http.listen(config.port, cb.bind(self));
+        _http.listen(config.port, cb&&cb.bind(self));
         return self;
     };
 

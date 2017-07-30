@@ -1,7 +1,7 @@
 'use strict';
 const fs = require("fs");
 const UploadedFilesHandler = require("./UploadedFilesHandler");
-module.exports = function(_vars) {
+module.exports = function(_vars, _app) {
 
     function objectInjector(fn, req, res, injector) {
         return new (injector(fn, req, res))();
@@ -27,6 +27,30 @@ module.exports = function(_vars) {
 
     this.$request = function(req) {
         return req;
+    };
+
+    this.$express = function() {
+        return _app;
+    };
+
+    this.$locals = function() {
+        return {
+            has: function(name) {
+                return _app.locales[name] !== undefined;
+            },
+            get: function(name) {
+                return _app.locals[name] || "";
+            },
+            set: function(name, val) {
+                _app.locals[name] = val;
+            },
+            unset: function(name, val) {
+                delete _app.locals[name];
+            },
+            all: function() {
+                return _app.locals || {};
+            }
+        }
     };
 
     this.$session = function(req) {
