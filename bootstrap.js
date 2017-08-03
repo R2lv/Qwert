@@ -307,8 +307,7 @@ module.exports = new (function() {
 
         _http.listen(config.port || defaults.port, cb&&cb.bind(self));
 
-
-        // _https.listen(config.ssl.port || defaults.port_ssl, cb2&&cb2.bind(self));
+        _https&&_https.listen(config.ssl.port || defaults.port_ssl, cb2&&cb2.bind(self));
 
         return self;
     };
