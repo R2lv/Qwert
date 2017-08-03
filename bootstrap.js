@@ -227,6 +227,9 @@ module.exports = new (function() {
     this.getHttpServerInstance = function() {
         return _http;
     };
+    this.getHttpsServerInstance = function() {
+        return _https;
+    };
 
     this.getExpressInstance = function() {
         return _app;
@@ -277,10 +280,19 @@ module.exports = new (function() {
             store: config.sessionStore || defaults.sessionStore
         });
 
+
+        _http = http.Server(_app);
+
         if(util.exists(conf.ssl)) {
             if(!(util.exists(conf.ssl.key) && util.exists(conf.ssl.cert))) {
                 throw new Error("Please provide ssl Key and Certificate or remove ssl config");
             }
+
+            _https = https.Server({
+                cert: fs.readFileSync(config.ssl.cert),
+                key: fs.readFileSync(config.ssl.key)
+            }, _app);
+
         }
 
 
@@ -292,16 +304,11 @@ module.exports = new (function() {
             throw new Error("Config is not set");
         }
         init();
-        _http = http.Server(_app);
+
         _http.listen(config.port || defaults.port, cb&&cb.bind(self));
 
-        if(util.exists(config.ssl)) {
-            _https = https.Server({
-                cert: fs.readFileSync(config.ssl.cert),
-                key: fs.readFileSync(config.ssl.key)
-            }, _app);
-            _https.listen(config.ssl.port || defaults.port_ssl, cb2&&cb2.bind(self));
-        }
+
+        // _https.listen(config.ssl.port || defaults.port_ssl, cb2&&cb2.bind(self));
 
         return self;
     };
